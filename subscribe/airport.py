@@ -678,7 +678,10 @@ class AirPort:
                     item["name"] = tag.strip().upper() + "-" + item["name"]
 
                 # ====== wyatt 修改，给名字增加网址 ==========#
-                item["name"] = item["name"] + "##" + self.ref
+                
+                realsite = re.sub(r'^https?://', '', self.ref)
+                item["name"] = item["name"] + "##" + realsite
+                
                 # ====== wyatt 修改 ========== #
 
                 # 方便过滤无效订阅
