@@ -677,6 +677,10 @@ class AirPort:
                 if "" != tag.strip():
                     item["name"] = tag.strip().upper() + "-" + item["name"]
 
+                # ====== wyatt 修改，给名字增加网址 ==========#
+                item["name"] = item["name"] + "##" + self.ref
+                # ====== wyatt 修改 ========== #
+
                 # 方便过滤无效订阅
                 item["sub"] = self.sub
                 item["liveness"] = self.liveness
