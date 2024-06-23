@@ -680,7 +680,7 @@ class AirPort:
                 # ====== wyatt 修改，给名字增加网址 ==========#
                 
                 realsite = re.sub(r'^https?://', '', self.ref)
-                item["name"] = item["name"] + "##" + realsite
+                item["name"] = item["name"] + "@" + realsite
                 
                 # ====== wyatt 修改 ========== #
 
