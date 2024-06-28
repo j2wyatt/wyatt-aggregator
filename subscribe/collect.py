@@ -139,7 +139,7 @@ def assign(
             domains.update(parse_domains(content=str(f.read())))
 
     # 爬取新站点列表
-    if not domains or overwrite:
+    if not domains and overwrite:
         candidates = crawl.collect_airport(
             channel="jichang_list",
             page_num=pages,
