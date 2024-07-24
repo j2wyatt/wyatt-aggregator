@@ -1,5 +1,14 @@
 {
+  "name": "nodefilter",
+  "version": "1.0.0",
+  "description": "节点过滤",
   "dependencies": {
-    "axios": "^1.7.2"
+    "@vighnesh153/github-gist": "^0.4.7",
+    "axios": "^1.7.2",
+    "yaml": "^2.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
   }
 }
