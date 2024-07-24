@@ -135,3 +135,11 @@ config.yaml
 generate.ini
 subscribe/config/config.json
 config.local.json
+
+# wyatt nodejs
+node_modules
+data
+.DS_STORE
+
+clash/clash-darwin-amd
+subconverter/subconverter-darwin
