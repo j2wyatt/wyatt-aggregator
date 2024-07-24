@@ -1,4 +1,4 @@
-name: Collect
+name: nodeFilter
 on:
   # executed once a week on Sundays at 00:00
   schedule:
