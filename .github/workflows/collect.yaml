@@ -65,7 +65,7 @@ jobs:
           fi
 
       - name: Collect
-        run: python -u subscribe/collect.py  --skip --invisible --all
+        run: python -u subscribe/collect.py -t clash --skip --invisible --all
 
       - name: Timestamp
         run: date
