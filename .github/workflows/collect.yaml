@@ -67,5 +67,24 @@ jobs:
       - name: Collect
         run: python -u subscribe/collect.py -t clash --skip --invisible --all
 
+      # Node.js setup
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # or any version you need
+
+      - name: Wait for 10 Seconds
+        run: sleep 10
+
+      - name: Install Node.js Dependencies
+        run: |
+          cd nodefilter
+          npm install
+
+      - name: filteNode
+        run: |
+          cd nodefilter
+          npm start
+
       - name: Timestamp
         run: date
