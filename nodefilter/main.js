@@ -9,6 +9,8 @@ const GIST_ID = process.env.GIST_LINK.replace("j2wyatt/", "")
 const FILE_NAME = 'clash.yaml';
 const YOUR_GITHUB_USERNAME = "j2wyatt"
 const YAML_URL = 'https://gist.githubusercontent.com/j2wyatt/'+ GIST_ID +'/raw/clash.yaml';
+const LESS_YAML_URL = 'https://gist.githubusercontent.com/j2wyatt/'+ GIST_ID +'/raw/clashless.yaml';
+const LESS_FILE_NAME = 'clashless.yaml';
 
 /**
  * 在节点采集完成后，使用这个脚本过滤多余的节点
@@ -17,6 +19,11 @@ const YAML_URL = 'https://gist.githubusercontent.com/j2wyatt/'+ GIST_ID +'/raw/c
 async function main() {
     // let raw = await loadClashConfig()
     // let raw = await loadGistFile()
+    await maxConfig()
+    await lessConfig()
+};
+
+async function maxConfig(){
     let raw = await readYamlFile(YAML_URL)
     let res = raw;
     // 增加通用规则
@@ -24,13 +31,25 @@ async function main() {
     // 每个网站最多五十个节点
     res = await groupNumNodes(res, {axios, yaml, notify});
     // 手动选择的分组里每个网站最多五个
-    res = await removeExtraNodes(res, {axios, yaml, notify});
+    res = await removeExtraNodes(res, {axios, yaml, notify}, 5);
     // 按照网站建立分组
     res = await madeGroupBySite(res, {axios, yaml, notify});
     // await writeClashConfig(res)
-    await updateGistFile(res)
-};
+    await updateGistFile(res, FILE_NAME)
+}
 
+async function lessConfig(){
+    let raw = await readYamlFile(YAML_URL)
+    let res = raw;
+    // 增加通用规则
+    res = await changeRules(res, {axios, yaml, notify});
+    // 每个网站最多五十个节点
+    res = await groupNumNodes(res, {axios, yaml, notify});
+    // 手动选择的分组里每个网站最多五个
+    res = await removeExtraNodes(res, {axios, yaml, notify}, 20);
+    // await writeClashConfig(res)
+    await updateGistFile(res, LESS_FILE_NAME)
+}
 
 async function readYamlFile(url) {
     try {
@@ -80,11 +99,11 @@ async function loadGistFile(){
 }
 
 // 更新 gist
-async function updateGistFile(newContent) {
+async function updateGistFile(newContent, fileName) {
     try {
         // Update the file content
         const updatedFiles = {
-            [FILE_NAME]: {
+            [fileName]: {
                 content: newContent
             }
         };
@@ -229,7 +248,7 @@ async function madeGroupBySite(raw, {axios, yaml, notify}) {
 }
 
 // 每个网站保留十个节点
-async function removeExtraNodes(raw, {axios, yaml, notify}) {
+async function removeExtraNodes(raw, {axios, yaml, notify}, max) {
     let obj = yaml.parse(raw);
     if (!obj['proxy-groups']) return raw;
 
@@ -253,7 +272,7 @@ async function removeExtraNodes(raw, {axios, yaml, notify}) {
                     nmp.push(node);
                     return true
                 }
-                if (count < 5) {
+                if (count < max) {
                     nodesMap.set(websiteUrl, count + 1);
                     // await urlConsole(nodesMap.get(websiteUrl), axios)
                     // await urlConsole(node)
