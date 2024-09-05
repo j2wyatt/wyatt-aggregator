@@ -371,7 +371,7 @@ function removeVlessNode(raw, {axios, yaml, notify}) {
         const vlessNodeNames = proxies.filter(proxy => (proxy.type === 'vless') || (proxy.type === 'hysteria2')).map(proxy => proxy.name);
 
         // 过滤掉 type 为 vless 的节点
-        let filteredProxies = proxies.filter(proxy => (proxy.type === 'vless') || (proxy.type === 'hysteria2'));
+        let filteredProxies = proxies.filter(proxy => (proxy.type !== 'vless') && (proxy.type !== 'hysteria2'));
 
         return {filteredProxies, vlessNodeNames};
     };
