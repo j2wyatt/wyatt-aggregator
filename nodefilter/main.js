@@ -28,6 +28,8 @@ async function maxConfig(){
     let res = raw;
     // 增加通用规则
     res = await changeRules(res, {axios, yaml, notify});
+    // 删掉所有的 vless 节点
+    res = await removeVlessNode(res, {axios, yaml, notify});
     // 每个网站最多五十个节点
     res = await groupNumNodes(res, {axios, yaml, notify});
     // 手动选择的分组里每个网站最多五个
@@ -357,6 +359,45 @@ function addSecName(raw, {axios, yaml, notify}) {
     });
 
     return yaml.stringify(obj);
+}
+
+function removeVlessNode(raw, {axios, yaml, notify}){
+  let obj = yaml.parse(raw);
+
+  // 函数：移除所有 type 为 vless 的节点
+  const removeVlessNodes = (proxies) => {
+    // 找出所有 type 为 vless 的节点名字
+    const vlessNodeNames = proxies.filter(proxy => proxy.type === 'vless').map(proxy => proxy.name);
+
+    // 过滤掉 type 为 vless 的节点
+    let filteredProxies = proxies.filter(proxy => proxy.type !== 'vless');
+
+    return { filteredProxies, vlessNodeNames };
+  };
+
+  // 函数：从代理组中移除 vless 类型节点的名字
+  const removeVlessNodeNamesFromGroups = (proxyGroups, vlessNodeNames) => {
+    proxyGroups.forEach(group => {
+      if (group.proxies) {
+        // 过滤掉代理组中包含 vless 节点的代理名字
+        group.proxies = group.proxies.filter(proxyName => !vlessNodeNames.includes(proxyName));
+      }
+    });
+  };
+
+  // 移除 vless 节点，并获取 vless 节点的名字列表
+  if (obj.proxies) {
+    const { filteredProxies, vlessNodeNames } = removeVlessNodes(obj.proxies);
+    obj.proxies = filteredProxies;
+
+    // 从代理组中移除 vless 节点的名字
+    if (obj['proxy-groups']) {
+      removeVlessNodeNamesFromGroups(obj['proxy-groups'], vlessNodeNames);
+    }
+  }
+
+  // 将对象转换回 YAML 字符串
+  return yaml.stringify(obj);
 }
 
 // 添加第三方规则
