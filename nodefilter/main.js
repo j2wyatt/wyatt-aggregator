@@ -29,7 +29,7 @@ async function maxConfig() {
     // 增加通用规则
     res = await changeRules(res, {axios, yaml, notify});
     // 删掉所有的 vless 节点
-    res = await removeVlessNode(res, {axios, yaml, notify});
+    // res = await removeVlessNode(res, {axios, yaml, notify});
     // 每个网站最多五十个节点
     res = await groupNumNodes(res, {axios, yaml, notify});
     // 手动选择的分组里每个网站最多五个
