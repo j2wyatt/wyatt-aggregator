@@ -368,10 +368,13 @@ function removeVlessNode(raw, {axios, yaml, notify}) {
     const removeVlessNodes = (proxies) => {
         // let iftype = (proxy.type === 'vless') || (proxy.type === 'hysteria2')
         // 找出所有 type 为 vless 的节点名字
-        const vlessNodeNames = proxies.filter(proxy => (proxy.type === 'vless') || (proxy.type === 'hysteria2')).map(proxy => proxy.name);
+        const vlessNodeNames = proxies.filter(proxy => (proxy.type === 'vless')
+                                              || (proxy.type === 'hysteria2')
+                                              || (proxy.type === 'cipher')).map(proxy => proxy.name);
 
         // 过滤掉 type 为 vless 的节点
-        let filteredProxies = proxies.filter(proxy => (proxy.type !== 'vless') && (proxy.type !== 'hysteria2'));
+        let filteredProxies = proxies.filter(proxy => (proxy.type !== 'vless')
+                                             && (proxy.type !== 'hysteria2') && (proxy.type !== 'cipher'));
 
         return {filteredProxies, vlessNodeNames};
     };
