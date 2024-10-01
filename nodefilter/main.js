@@ -22,6 +22,7 @@ async function main() {
     // let raw = await loadGistFile()
     await maxConfig()
     await lessConfig()
+    await allConfig()
 };
 
 async function maxConfig() {
