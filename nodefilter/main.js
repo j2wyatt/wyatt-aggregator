@@ -11,6 +11,7 @@ const YOUR_GITHUB_USERNAME = "j2wyatt"
 const YAML_URL = 'https://gist.githubusercontent.com/j2wyatt/' + GIST_ID + '/raw/clash.yaml';
 const LESS_YAML_URL = 'https://gist.githubusercontent.com/j2wyatt/' + GIST_ID + '/raw/clashless.yaml';
 const LESS_FILE_NAME = 'clashless.yaml';
+const ALL_FILE_NAME = 'clashall.yaml';
 
 /**
  * 在节点采集完成后，使用这个脚本过滤多余的节点
@@ -48,9 +49,17 @@ async function lessConfig() {
     // 每个网站最多五十个节点
     res = await groupNumNodes(res, {axios, yaml, notify});
     // 手动选择的分组里每个网站最多五个
-    res = await removeExtraNodes(res, {axios, yaml, notify}, 20);
+    res = await removeExtraNodes(res, {axios, yaml, notify}, 60);
     // await writeClashConfig(res)
     await updateGistFile(res, LESS_FILE_NAME)
+}
+
+async function allConfig() {
+    let raw = await readYamlFile(YAML_URL)
+    let res = raw;
+    // 增加通用规则
+    res = await changeRules(res, {axios, yaml, notify});
+    await updateGistFile(res, ALL_FILE_NAME)
 }
 
 async function readYamlFile(url) {
