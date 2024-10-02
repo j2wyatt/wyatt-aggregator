@@ -50,7 +50,7 @@ async function lessConfig() {
     // 每个网站最多五十个节点
     res = await groupNumNodes(res, {axios, yaml, notify});
     // 手动选择的分组里每个网站最多五个
-    res = await removeExtraNodes(res, {axios, yaml, notify}, 60);
+    res = await removeExtraNodes(res, {axios, yaml, notify}, 20);
     // await writeClashConfig(res)
     await updateGistFile(res, LESS_FILE_NAME)
 }
