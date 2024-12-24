@@ -37,7 +37,7 @@ const { DownloaderHelper } = require('node-downloader-helper');
  *   - 先在树莓派上跑，看看效果，以后放到 github 上
  * - 2024-12-24
  *   - 这次把脚本添加到 github 执行
- *   - 进行对应改造
+ *   - 进行对应改造，增加 workflow 脚本
  *   - 启动 x64 的 clash 版本，clash 启动前增加执行权限
  *   - 文件的保存路径要改变
  *   - 最后生成的文件，要保存到 gist
@@ -125,7 +125,7 @@ async function getProxyGroupNames() {
 // 机场测速，然后依次尝试节点可用性
 async function checkSingleAirWork() {
     // 稍等它一下
-    await sleep(5 * 1000)
+    await sleep(20 * 1000)
     console.log("测试节点的可用性: 访问 " + targetUrl);
     const clash = Clash({ secret: '', api: `http://127.0.0.1:${EXT_PORT}` });
     try {
@@ -240,8 +240,6 @@ async function downloadSubscription() {
     }
 }
 
-
-
 // 防止一项任务执行超时，中断函数执行
 function interruptibleFunction(fn) {
     let timeoutId;
@@ -290,12 +288,6 @@ async function makeAxiosOption(port = CLASH_PORT) {
             return status >= 200 && status < 300; // 认值
         },
     };
-}
-
-async function makeDownProxy(port = CLASH_PORT) {
-    let proxyOpts = {}
-    proxyAgent = new HttpsProxyAgent(`http://127.0.0.1:${port}`)
-    return proxyOpts
 }
 
 // 替换原来的 directCrawler 函数
