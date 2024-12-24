@@ -10,7 +10,6 @@ const moment = require('moment');
 const { DownloaderHelper } = require('node-downloader-helper');
 
 
-
 /**
  * - 脚本的目的是筛选可以使用的机场节点
  * - 流程
@@ -125,7 +124,7 @@ async function getProxyGroupNames() {
 // 机场测速，然后依次尝试节点可用性
 async function checkSingleAirWork() {
     // 稍等它一下
-    await sleep(20 * 1000)
+    await sleep(10 * 1000)
     console.log("测试节点的可用性: 访问 " + targetUrl);
     const clash = Clash({ secret: '', api: `http://127.0.0.1:${EXT_PORT}` });
     try {
@@ -316,11 +315,11 @@ async function modifyClashConfig() {
         config['external-controller'] = ":" + EXT_PORT;
 
         // 添加 geox-url 配置
-        config['geox-url'] = {
-            'geoip': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
-            'geosite': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
-            'mmdb': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb'
-        };
+        // config['geox-url'] = {
+        //     'geoip': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
+        //     'geosite': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
+        //     'mmdb': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb'
+        // };
 
         // 将修改后的配置写入新文件
         fs.writeFileSync(confPath, yaml.stringify(config));
@@ -361,7 +360,6 @@ async function filterClashConfig(goodNodes) {
             }
             return group;
         });
-
 
         // 保存过滤后的配置
         fs.writeFileSync(outputPath, yaml.stringify(config));
