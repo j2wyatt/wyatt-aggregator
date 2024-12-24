@@ -8,9 +8,14 @@ const yaml = require('yaml');
 const os = require('os')
 const moment = require('moment');
 const { DownloaderHelper } = require('node-downloader-helper');
+const tool = require('./tools.js')
 
 
 /**
+ * ======================================
+ *  BUG 温馨提示, 这个是 github 版本的测速脚本
+ * ======================================
+ * 
  * - 脚本的目的是筛选可以使用的机场节点
  * - 流程
  *   - 请求到机场订阅文件
@@ -42,6 +47,7 @@ const { DownloaderHelper } = require('node-downloader-helper');
  *   - 最后生成的文件，要保存到 gist
  *   - 我向 clash 文件里加里国加速的 geoip 的 db 文件
  *   - 可能在国外访问不了，会导致启动失败
+ *   - 最后的结果要保存到文件,可以网络访问的 gist
  * 
  * 
  */
@@ -54,11 +60,12 @@ const EXT_PORT = 7889;
 // const CLASH_PORT = 7892
 // const EXT_PORT = 9090;
 
-const mySub = "https://gh-proxy.com/https://gist.githubusercontent.com/j2wyatt/f5754c9d3fa49a8efb017fb7647dff38/raw/clashless.yaml"
-// const mySub = "https://gh-proxy.com/https://gist.githubusercontent.com/j2wyatt/f5754c9d3fa49a8efb017fb7647dff38/raw/clashall.yaml"
+// const mySub = "https://gh-proxy.com/https://gist.githubusercontent.com/j2wyatt/f5754c9d3fa49a8efb017fb7647dff38/raw/clashless.yaml"
+const mySub = "https://gh-proxy.com/https://gist.githubusercontent.com/j2wyatt/f5754c9d3fa49a8efb017fb7647dff38/raw/clashall.yaml"
 const targetUrl = "https://u3c3.com"
 let goodParts = []
 let clashProcess = null;
+const MAX_GOOD = 40
 
 // 启动 clash-mac 服务
 function startClashService() {
@@ -189,13 +196,11 @@ async function checkSingleAirWork() {
                                 console.log(`============= 节点可用[${goodParts.length}]: ", delayProx, " ================`);
                                 console.log("===================================================\n\n");
                                 goodParts.push(delayProx);
+                                if(goodParts.length >= MAX_GOOD){
+                                    return true
+                                }
                             }
                         }
-
-                        // // TODO 测试代码
-                        // if (goodParts.length > 3) {
-                        //     return true
-                        // }
                     } catch (err) {
                         console.log("请求出错: " + err.message);
                     }
@@ -366,7 +371,7 @@ async function filterClashConfig(goodNodes) {
         // 保存过滤后的配置
         fs.writeFileSync(outputPath, yaml.stringify(config));
         console.log("已保存过滤后的配置文件到:", outputPath);
-        return true;
+        return yaml.stringify(config);
     } catch (error) {
         console.error("过滤配置文件时出错:", error);
         return false;
@@ -447,7 +452,8 @@ async function main() {
 
         // 新增：过滤配置文件
         if (goodParts.length > 0) {
-            await filterClashConfig(goodParts);
+            let resStr = await filterClashConfig(goodParts);
+            await tool.updateClashSpeedFile(resStr)
         } else {
             console.log("没有找到可用节点，跳过配置文件过滤");
         }
