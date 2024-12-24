@@ -10,9 +10,11 @@ const FILE_NAME = 'clashspeed.yaml';
  *
  * */
 exports.updateClashSpeedFile = async function (resStr) {
-    await updateGistFile(resStr, FILE_NAME)
+    await updateGistFile("fewfewf", FILE_NAME)
 }
-
+ function main(){
+    updateGistFile("feffewf", FILE_NAME)
+}
 // 更新 gist
 async function updateGistFile(newContent, fileName) {
     try {
@@ -33,6 +35,7 @@ async function updateGistFile(newContent, fileName) {
                 'Content-Type': 'application/json'
             }
         });
+        console.log(updateResponse)
 
         console.log('Gist file updated successfully');
     } catch (error) {
