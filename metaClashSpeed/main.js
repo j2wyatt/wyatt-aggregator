@@ -40,6 +40,8 @@ const { DownloaderHelper } = require('node-downloader-helper');
  *   - 启动 x64 的 clash 版本，clash 启动前增加执行权限
  *   - 文件的保存路径要改变
  *   - 最后生成的文件，要保存到 gist
+ *   - 我向 clash 文件里加里国加速的 geoip 的 db 文件
+ *   - 可能在国外访问不了，会导致启动失败
  * 
  * 
  */
@@ -72,7 +74,7 @@ function startClashService() {
         }
 
         clashProcess.stdout.on('data', (data) => {
-            console.log('Clash 输出:', data.toString());
+            // console.log('Clash 输出:', data.toString());
         });
 
         clashProcess.stderr.on('data', (data) => {
