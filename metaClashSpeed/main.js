@@ -35,6 +35,12 @@ const { DownloaderHelper } = require('node-downloader-helper');
  *   - 那为什么我平板上选择的时候就不行了
  *   - 只有一个办法了，那就是没小时跑一次脚本，做一次筛选
  *   - 先在树莓派上跑，看看效果，以后放到 github 上
+ * - 2024-12-24
+ *   - 这次把脚本添加到 github 执行
+ *   - 进行对应改造
+ *   - 启动 x64 的 clash 版本，clash 启动前增加执行权限
+ *   - 文件的保存路径要改变
+ *   - 最后生成的文件，要保存到 gist
  * 
  * 
  */
@@ -57,16 +63,17 @@ let clashProcess = null;
 function startClashService() {
     return new Promise((resolve, reject) => {
         const configPath = path.join(__dirname, 'conf', 'sub.yaml');
-
-        if (os.type() == 'Linux') {
-            //Linux平台
+        if (os.arch() == "arm64") {
             clashProcess = spawn('./bin/mihomo-pi', ['-f', configPath]);
+        } else if (os.type() == 'Linux') {
+            // github
+            clashProcess = spawn('./bin/mihomo-github', ['-f', configPath]);
         } else {
             clashProcess = spawn('./bin/mihomo-mac', ['-f', configPath]);
         }
 
         clashProcess.stdout.on('data', (data) => {
-            // console.log('Clash 输出:', data.toString());
+            console.log('Clash 输出:', data.toString());
         });
 
         clashProcess.stderr.on('data', (data) => {
@@ -264,7 +271,7 @@ function interruptibleFunction(fn) {
     return Promise.race([fnPromise, timeoutPromise]);
 }
 
-var sleep = function (ms) {
+var sleep = function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
@@ -279,7 +286,7 @@ async function makeAxiosOption(port = CLASH_PORT) {
         proxy: false,
         httpsAgent,
         timeout: TIMEOUT,
-        validateStatus: function (status) {
+        validateStatus: function(status) {
             return status >= 200 && status < 300; // 认值
         },
     };
@@ -338,11 +345,6 @@ async function filterClashConfig(goodNodes) {
     console.log("开始过滤配置文件，保留可用节点");
     const confPath = path.join(__dirname, 'conf', 'sub.yaml');
     let outputPath = path.join(__dirname, 'conf', 'out.yaml');
-
-    // 因为 nginx 访问不到 pi 目录的内容,所以定制
-    if (os.type() == 'Linux') {
-        outputPath = path.join('/mnt/lingShan/dev/service/mtaClash.yaml');
-    }
 
     try {
         const fileContent = fs.readFileSync(confPath, 'utf8');
