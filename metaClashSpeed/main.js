@@ -65,7 +65,7 @@ const mySub = "https://gh-proxy.com/https://gist.githubusercontent.com/j2wyatt/f
 const targetUrl = "https://u3c3.com"
 let goodParts = []
 let clashProcess = null;
-const MAX_GOOD = 40
+const MAX_GOOD = 4
 
 // 启动 clash-mac 服务
 function startClashService() {
