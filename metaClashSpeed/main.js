@@ -52,7 +52,7 @@ const tool = require('./tools.js')
  * 
  */
 
-const TIMEOUT = 5 * 1000; // 10 seconds
+const TIMEOUT = 15 * 1000; // 10 seconds
 const MIN_DELAY = 0;
 
 const CLASH_PORT = 7888
