@@ -48,6 +48,9 @@ const tool = require('./tools.js')
  *   - 我向 clash 文件里加里国加速的 geoip 的 db 文件
  *   - 可能在国外访问不了，会导致启动失败
  *   - 最后的结果要保存到文件,可以网络访问的 gist
+ * - 2024-12-25
+ *   - 最终的文件里加上 geo 链接，使用国内加速的网站
+ *
  * 
  * 
  */
@@ -196,7 +199,7 @@ async function checkSingleAirWork() {
                                 console.log(`============= 节点可用[${goodParts.length}]: ", delayProx, " ================`);
                                 console.log("===================================================\n\n");
                                 goodParts.push(delayProx);
-                                if(goodParts.length >= MAX_GOOD){
+                                if (goodParts.length >= MAX_GOOD) {
                                     return true
                                 }
                             }
@@ -368,6 +371,12 @@ async function filterClashConfig(goodNodes) {
             return group;
         });
 
+        // 添加 geox-url 配置
+        config['geox-url'] = {
+            'geoip': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat',
+            'geosite': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat',
+            'mmdb': 'https://hub.gitmirror.com/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb'
+        };
         // 保存过滤后的配置
         fs.writeFileSync(outputPath, yaml.stringify(config));
         console.log("已保存过滤后的配置文件到:", outputPath);
